@@ -63,7 +63,7 @@
         android:layout_marginTop="20dp"
         android:text="Tạo"
         android:textColor="#FFFFFF"
-        android:background="@drawable/round_blue_button"/>
+        android:background="@drawable/button_green"/>
 
 
 </LinearLayout>

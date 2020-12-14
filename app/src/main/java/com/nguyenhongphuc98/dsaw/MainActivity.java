@@ -38,16 +38,6 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MainActivity extends AppCompatActivity {
-   // private int mMenuSet = 2;
-
-//    // Tracking location
-//    private ArrayList<String> permissionsToRequest;
-//    private ArrayList permissionsRejected = new ArrayList();
-//    private ArrayList permissions = new ArrayList();
-//
-//    private final static int ALL_PERMISSIONS_RESULT = 101;
-//    LocationTrack locationTrack;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -55,54 +45,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Utils.activity = this;
-        DataManager d = DataManager.Instance(getApplicationContext());
-        //d.TestConnectDB();
+        DataManager.Instance(getApplicationContext());
 
         //fetch data in background
         DataService.Instance().updateCovidStatistic();
 
-//        //set current account after login to using later
-//        MutableLiveData<Account> user = new MutableLiveData<>();
-//        //DataManager.Instance().fetchAccountById("184331234",user);
-//        //DataManager.Instance().fetchAccountById(userId,user);
-//        DataManager.Instance().fetchAccountByEmail(DataCenter.currentUser.getEmail(),user);
-//        user.observe(this, new Observer<Account>() {
-//            @Override
-//            public void onChanged(Account account) {
-//
-//                // update to get full info of current account
-//                DataCenter.currentUser = account;
-//                locationTrack = new LocationTrack(MainActivity.this);
-//
-//                if (locationTrack.canGetLocation()) {
-//
-//                    double longitude = locationTrack.getLongitude();
-//                    double latitude = locationTrack.getLatitude();
-//
-//                    DataCenter.currentLocation = new CurrentLocation(latitude, longitude);
-//
-//                    //Toast.makeText(getApplicationContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_LONG).show();
-//                    //Log.e("LOCATION", "onCreate: location:"+longitude +"-"+latitude);
-//                } else {
-//
-//                    locationTrack.showSettingsAlert();
-//                }
-//            }
-//        });
-
         MutableLiveData<Warning> mWarning = new MutableLiveData<>();
         DataManager.Instance().FetchWarning(mWarning);
-        mWarning.observe(this, new Observer<Warning>() {
-            @Override
-            public void onChanged(Warning warning) {
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL_ID")
-                        .setSmallIcon(R.drawable.warning_icon)
-                        .setContentTitle(warning.getTitle())
-                        .setContentText(warning.getContent())
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-                // notificationId is a unique int for each notification that you must define
-                notificationManager.notify(1, builder.build());
+
+        mWarning.observe(this, warning -> {
+            if (warning.getCode_city() == -1 || warning.getCode_city() == DataCenter.currentUser.getCode_city())
+            {
+                if (warning.getCode_district() == -1 || warning.getCode_district() == DataCenter.currentUser.getCode_district())
+                {
+                    if (warning.getCode_ward() == -1 || warning.getCode_ward() == DataCenter.currentUser.getCode_ward())
+                    {
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL_ID")
+                                .setSmallIcon(R.drawable.warning_icon)
+                                .setContentTitle(warning.getTitle())
+                                .setContentText(warning.getContent())
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+                        // notificationId is a unique int for each notification that you must define
+                        notificationManager.notify(1, builder.build());
+                    }
+                }
             }
         });
 
@@ -112,15 +79,6 @@ public class MainActivity extends AppCompatActivity {
             navView.inflateMenu(R.menu.bottom_nav_menu);
         else
             navView.inflateMenu(R.menu.bottom_nav_menu_admin);
-
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-
-        /*AppBarConfiguration appBarConfiguration;
-
-            appBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.navigation_home, R.id.navigation_news)
-                    .build();*/
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);

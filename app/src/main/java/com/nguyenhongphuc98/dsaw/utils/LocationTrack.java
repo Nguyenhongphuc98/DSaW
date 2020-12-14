@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
+import com.nguyenhongphuc98.dsaw.MainActivity;
 import com.nguyenhongphuc98.dsaw.data.DataCenter;
 import com.nguyenhongphuc98.dsaw.data.model.RouteData;
 import com.nguyenhongphuc98.dsaw.data.model.TrackingStatus;
@@ -26,9 +27,7 @@ public class LocationTrack extends Service implements LocationListener {
 
     private final Context mContext;
 
-
     boolean checkGPS = false;
-
 
     boolean checkNetwork = false;
 
@@ -38,11 +37,10 @@ public class LocationTrack extends Service implements LocationListener {
     double latitude;
     double longitude;
 
-
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
 
-
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+
     protected LocationManager locationManager;
 
     public LocationTrack(Context mContext) {
@@ -94,10 +92,9 @@ public class LocationTrack extends Service implements LocationListener {
                             longitude = loc.getLongitude();
                         }
                     }
-                } else  if (checkNetwork) {
-
-
-                    if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                } else if (checkNetwork) {
+                    if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                            ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
                         // here to request the missing permissions, and then overriding
@@ -160,19 +157,15 @@ public class LocationTrack extends Service implements LocationListener {
         alertDialog.setMessage("Do you want to turn on GPS?");
 
 
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                mContext.startActivity(intent);
-            }
+        alertDialog.setPositiveButton("Yes", (dialog, which) -> {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            mContext.startActivity(intent);
+            /*Intent mainIntent = new Intent(this.mContext, MainActivity.class);
+            startActivity(mainIntent);*/
         });
 
 
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        alertDialog.setNegativeButton("No", (dialog, which) -> dialog.cancel());
 
 
         alertDialog.show();
@@ -181,7 +174,6 @@ public class LocationTrack extends Service implements LocationListener {
 
     public void stopListener() {
         if (locationManager != null) {
-
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -208,7 +200,7 @@ public class LocationTrack extends Service implements LocationListener {
 
         // get address from google map
         GeoHandle handle = new GeoHandle();
-        Geo.getAddressFromLocation(location.getLatitude(), location.getLongitude(),mContext,handle);
+        Geo.getAddressFromLocation(location.getLatitude(), location.getLongitude(), mContext, handle);
 
         // update status tracking when receive name of address in handler :v
     }

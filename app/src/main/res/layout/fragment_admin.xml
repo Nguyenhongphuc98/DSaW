@@ -22,11 +22,12 @@
         android:text="Hello, Admin" />
 
     <ScrollView
-        app:layout_constraintTop_toBottomOf="@id/wellcome_text"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="570dp"
-        android:layout_marginTop="30dp">
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/wellcome_text"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,56 +38,54 @@
                 android:id="@+id/item_row1"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                app:layout_constraintTop_toBottomOf="@+id/wellcome_text"
+                android:gravity="center"
                 app:layout_constraintLeft_toLeftOf="@+id/admin_fragment"
-                android:gravity="center">
+                app:layout_constraintTop_toBottomOf="@+id/wellcome_text">
 
                 <LinearLayout
                     android:id="@+id/item_import_case"
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/admin_card_item"
                     android:layout_margin="20dp"
-                    android:orientation="vertical"
-                    >
+                    android:background="@drawable/admin_card_item"
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:src="@drawable/import_96"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center"
+                        android:src="@drawable/import_96" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Nhập ca bệnh"
                         android:textColor="#fff"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/item_create_waring"
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/admin_card_item"
                     android:layout_margin="20dp"
-                    android:orientation="vertical"
-                    >
+                    android:background="@drawable/admin_card_item"
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:src="@drawable/megaphone_96"
                         android:layout_gravity="center"
-                        />
+                        android:src="@drawable/megaphone_96" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Tạo cảnh báo"
                         android:textColor="#fff"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -94,58 +93,54 @@
                 android:id="@+id/item_row2"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                app:layout_constraintTop_toBottomOf="@+id/item_row1"
+                android:gravity="center"
                 app:layout_constraintLeft_toLeftOf="@+id/admin_fragment"
-                android:gravity="center">
+                app:layout_constraintTop_toBottomOf="@+id/item_row1">
 
                 <LinearLayout
                     android:id="@+id/item_create_survey"
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/admin_card_item"
                     android:layout_margin="20dp"
-                    android:orientation="vertical"
-                    >
+                    android:background="@drawable/admin_card_item"
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:src="@drawable/outline_list_96"
                         android:layout_gravity="center"
-                        />
+                        android:src="@drawable/outline_list_96" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Tạo khảo sát"
                         android:textColor="#fff"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/item_view_survey"
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/admin_card_item"
                     android:layout_margin="20dp"
-                    android:orientation="vertical"
-                    >
+                    android:background="@drawable/admin_card_item"
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:src="@drawable/report_96"
                         android:layout_gravity="center"
-                        />
+                        android:src="@drawable/report_96" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Xem khảo sát"
                         android:textColor="#fff"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -153,92 +148,87 @@
                 android:id="@+id/item_row3"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                app:layout_constraintTop_toBottomOf="@+id/item_row2"
+                android:gravity="center"
                 app:layout_constraintLeft_toLeftOf="@+id/admin_fragment"
-                android:gravity="center">
+                app:layout_constraintTop_toBottomOf="@+id/item_row2">
 
                 <LinearLayout
                     android:id="@+id/item_create_post"
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/admin_card_item"
                     android:layout_margin="20dp"
-                    android:orientation="vertical"
-                    >
+                    android:background="@drawable/admin_card_item"
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:src="@drawable/create_98"
                         android:layout_gravity="center"
-                        />
+                        android:src="@drawable/create_98" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Tạo bài viết"
                         android:textColor="#fff"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/item_view_statistics"
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/admin_card_item"
                     android:layout_margin="20dp"
-                    android:orientation="vertical"
-                    >
+                    android:background="@drawable/admin_card_item"
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:src="@drawable/statistics_report_98"
                         android:layout_gravity="center"
-                        />
+                        android:src="@drawable/statistics_report_98" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Xem thống kê"
                         android:textColor="#fff"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/item_row4"
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
-                app:layout_constraintTop_toBottomOf="@+id/item_row3"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 app:layout_constraintLeft_toLeftOf="@+id/admin_fragment"
-                android:gravity="center">
+                app:layout_constraintTop_toBottomOf="@+id/item_row3">
 
                 <LinearLayout
                     android:id="@+id/item_user_manager"
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/admin_card_item"
                     android:layout_margin="20dp"
+                    android:background="@drawable/admin_card_item"
                     android:orientation="vertical"
-                    >
+                    android:paddingBottom="10dp">
 
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:src="@drawable/user_manager_48"
                         android:layout_gravity="center"
-                        />
+                        android:src="@drawable/user_manager_48" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Quản lý user"
                         android:textColor="#fff"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -246,7 +236,7 @@
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
                     android:layout_margin="20dp"
-                    android:orientation="vertical" >
+                    android:orientation="vertical">
 
                 </LinearLayout>
             </LinearLayout>

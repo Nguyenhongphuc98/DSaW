@@ -75,59 +75,52 @@ public class CaseFragment extends Fragment {
         adaptor = new CaseAdaptor(getContext(), lsCases);
         lvCase.setAdapter(adaptor);
 
-        mViewModel.getLiveAccount().observe(this, new Observer<Account>() {
-            @Override
-            public void onChanged(Account account) {
+        mViewModel.getLiveAccount().observe(this, account -> {
 
-                if (account.getIdentity().equals(lastUIDInserted))
-                    return;
+            if (account.getIdentity().equals(lastUIDInserted))
+                return;
 
-                if (account.getIdentity().equals("null")) {
-                    Toast.makeText(getContext(),"User not found",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-               // Wait to get last location and insert case at that time
-                DataManager.Instance().fetchLastLocationOfUser(mViewModel.lastLocation, account.getIdentity());
-
-                tempCaseAccount = account;
+            if (account.getIdentity().equals("null")) {
+                Toast.makeText(getContext(),"User not found",Toast.LENGTH_SHORT).show();
+                return;
             }
+
+           // Wait to get last location and insert case at that time
+            DataManager.Instance().fetchLastLocationOfUser(mViewModel.lastLocation, account.getIdentity());
+
+            tempCaseAccount = account;
         });
 
-        mViewModel.getLastLocation().observe(this, new Observer<TrackingStatus>() {
-            @Override
-            public void onChanged(TrackingStatus trackingStatus) {
+        mViewModel.getLastLocation().observe(this, trackingStatus -> {
+            if (tempCaseAccount == null)
+                return;
 
-                if (tempCaseAccount == null)
-                    return;
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
+            Date date = new Date();
+            date.setMinutes(date.getMinutes() - 1);
+            String t = dateFormat.format(date);
+            Log.d("TAGGG", "onChanged: date"+ t);
 
-                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
-                Date date = new Date();
-                date.setMinutes(date.getMinutes() - 1);
-                String t = dateFormat.format(date);
-                Log.d("TAGGG", "onChanged: date"+ t);
+            String location = "1,1";
+            // Ex parten: "[10.84627,106.76992999999999]null,Vietnam"
+            location = trackingStatus.getLocation().split("]")[0];
+            location = location.substring(1);
 
-                String location = "1,1";
-                // Ex parten: "[10.84627,106.76992999999999]null,Vietnam"
-                location = trackingStatus.getLocation().split("]")[0];
-                location = location.substring(1);
+            Case c = new Case(tempCaseAccount.getArea(),
+                    t,
+                    "zzzzzzzzzzzzzzzzzz",
+                    fx,
+                    "setlater",
+                    location,
+                    tempCaseAccount.getIdentity(),
+                    tempCaseAccount.getUsername());
 
-                Case c = new Case(tempCaseAccount.getArea(),
-                        t,
-                        "zzzzzzzzzzzzzzzzzz",
-                        fx,
-                        "setlater",
-                        location,
-                        tempCaseAccount.getIdentity(),
-                        tempCaseAccount.getUsername());
-
-                DataManager.Instance().insertCase(c);
-                //Log.d("CASE", "location: " + location);
-                lsCases.add(c);
-                adaptor.notifyDataSetChanged();
-                lastUIDInserted = tempCaseAccount.getIdentity();
-                tempCaseAccount = null;
-            }
+            DataManager.Instance().insertCase(c);
+            //Log.d("CASE", "location: " + location);
+            lsCases.add(c);
+            adaptor.notifyDataSetChanged();
+            lastUIDInserted = tempCaseAccount.getIdentity();
+            tempCaseAccount = null;
         });
 
         return view;
@@ -170,18 +163,15 @@ public class CaseFragment extends Fragment {
 
     private void setupACtion() {
 
-        btnUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (spinner.getSelectedItemPosition() == 0) {
-                    Toast.makeText(getContext(),"Please choose object",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                String f = spinner.getSelectedItem().toString().split("-")[0].split(" ")[0];
-                mViewModel.updateCase(tvCmnd.getText().toString(),f);
-                fx = f;
+        btnUpdate.setOnClickListener(v -> {
+            if (spinner.getSelectedItemPosition() == 0) {
+                Toast.makeText(getContext(),"Please choose object",Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            String f = spinner.getSelectedItem().toString().split("-")[0].split(" ")[0];
+            mViewModel.updateCase(tvCmnd.getText().toString(),f);
+            fx = f;
         });
 
         tvSeeAll.setOnClickListener(new View.OnClickListener() {

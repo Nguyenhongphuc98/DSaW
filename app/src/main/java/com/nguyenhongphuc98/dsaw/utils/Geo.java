@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class Geo {
-
     public static void getAddressFromLocation(final double latitude, final double longitude, final Context context, final Handler handler) {
         Thread thread = new Thread() {
             @Override
@@ -57,6 +56,4 @@ public class Geo {
         };
         thread.start();
     }
-
-
 }

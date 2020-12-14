@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DSaW</string>
+    <string name="app_name">DSW</string>
     <string name="title_home">Home</string>
     <string name="title_news">News</string>
     <string name="title_report">Report</string>
@@ -9,7 +9,8 @@
     <string name="noi_dung_canh_bao">Nội dung cảnh báo</string>
     <string name="cmnd_the_can_cuoc">CMND/Thẻ căn cước</string>
     <string name="cmnd_nguoi_nhan">CMND người nhận</string>
-    <string name="gui_den_nguoi_cu_the">Gửi đến người cụ thể?</string>
+    <string name="khu_vuc_canh_bao">Khu vực cảnh báo</string>
+    <string name="gui_theo_khu_vuc">Gửi theo khu vực?</string>
     <string name="gui_ngay">Gửi ngay</string>
     <string name="title_admin">Admin</string>
     <string name="see_all"> <u>Xem tất cả</u>.</string>

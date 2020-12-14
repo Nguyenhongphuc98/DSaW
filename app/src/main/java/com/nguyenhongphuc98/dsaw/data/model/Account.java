@@ -23,9 +23,16 @@ public class Account {
 
     private String mail;
 
+    private int code_city;
+
+    private int code_district;
+
+    private int code_ward;
+
     public Account() {}
 
-    public Account(String birthday, String identity, String password, String phonenumber, String role, String username, String area, String area_management, String email) {
+    public Account(String birthday, String identity, String password, String phonenumber,
+                   String role, String username, String area, String area_management, String email) {
         this.birthday = birthday;
         this.identity = identity;
         this.password = password;
@@ -123,5 +130,29 @@ public class Account {
 
     public void setMail(String mail) {
         this.mail = mail;
+    }
+
+    public int getCode_city() {
+        return code_city;
+    }
+
+    public void setCode_city(int code_city) {
+        this.code_city = code_city;
+    }
+
+    public int getCode_district() {
+        return code_district;
+    }
+
+    public void setCode_district(int code_district) {
+        this.code_district = code_district;
+    }
+
+    public int getCode_ward() {
+        return code_ward;
+    }
+
+    public void setCode_ward(int code_ward) {
+        this.code_ward = code_ward;
     }
 }

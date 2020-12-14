@@ -30,10 +30,11 @@
     <ListView
         android:id="@+id/route_tracking_lv"
         android:layout_width="match_parent"
-        android:layout_height="580dp"
+        android:layout_height="match_parent"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="15dp"
+        android:layout_marginBottom="60dp"
         android:dividerHeight="4dp"
         android:divider="@android:color/transparent"/>
 </LinearLayout>

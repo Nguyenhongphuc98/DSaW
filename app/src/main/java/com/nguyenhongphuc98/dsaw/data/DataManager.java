@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Adapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.anychart.enums.CircularGaugePointerType;
 import com.anychart.scales.DateTime;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -56,6 +59,8 @@ import com.nguyenhongphuc98.dsaw.data.model.Answer;
 import com.nguyenhongphuc98.dsaw.data.model.AnswerViewModel;
 import com.nguyenhongphuc98.dsaw.data.model.Area;
 import com.nguyenhongphuc98.dsaw.data.model.Case;
+import com.nguyenhongphuc98.dsaw.data.model.City;
+import com.nguyenhongphuc98.dsaw.data.model.District;
 import com.nguyenhongphuc98.dsaw.data.model.News;
 import com.nguyenhongphuc98.dsaw.data.model.PublicData;
 import com.nguyenhongphuc98.dsaw.data.model.Question;
@@ -64,6 +69,7 @@ import com.nguyenhongphuc98.dsaw.data.model.RouteData;
 import com.nguyenhongphuc98.dsaw.data.model.Survey;
 import com.nguyenhongphuc98.dsaw.data.model.SurveyModel;
 import com.nguyenhongphuc98.dsaw.data.model.TrackingStatus;
+import com.nguyenhongphuc98.dsaw.data.model.Ward;
 import com.nguyenhongphuc98.dsaw.ui.home.HomeDelegate;
 import com.nguyenhongphuc98.dsaw.ui.login.LoginActivity;
 import com.nguyenhongphuc98.dsaw.ui.login.ResetPasswordActivity;
@@ -189,32 +195,29 @@ public class DataManager {
 
     public void ProcessLogin(final String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            //GetUserDataByEmail(email);
-                            loginProcess.LoginSuccessful();
-                            loginProcess.LoadUserDataComplete();
-                            /*if(this.loginCallback!=null)
-                            {
-                                loginCallback.OnLoginComplete(LoginCallback.CODE_LOGIN_SUCCESS);
-                                Log.d("DATAMANAGER","callback login");
-                            }*/
-                            Log.d("DATAMANAGER", "errcallback login");
-                        }
-                        else {
-                            loginProcess.LoginFail();
-                            /*if(loginCallback!=null)
-                            {
-                                loginCallback.OnLoginComplete(LoginCallback.CODE_LOGIN_INCORRECT);
-                                Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            }*/
-                            // If sign in fails, display a message to the user.
-                            Log.d(TAG, "signInWithEmail:failure");
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithEmail:success");
+                        //GetUserDataByEmail(email);
+                        loginProcess.LoginSuccessful();
+                        loginProcess.LoadUserDataComplete();
+                        /*if(this.loginCallback!=null)
+                        {
+                            loginCallback.OnLoginComplete(LoginCallback.CODE_LOGIN_SUCCESS);
+                            Log.d("DATAMANAGER","callback login");
+                        }*/
+                        Log.d("DATAMANAGER", "errcallback login");
+                    }
+                    else {
+                        loginProcess.LoginFail();
+                        /*if(loginCallback!=null)
+                        {
+                            loginCallback.OnLoginComplete(LoginCallback.CODE_LOGIN_INCORRECT);
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        }*/
+                        // If sign in fails, display a message to the user.
+                        Log.d(TAG, "signInWithEmail:failure");
                     }
                 });
 
@@ -256,7 +259,6 @@ public class DataManager {
         if (mAuth.getCurrentUser() != null) return true;
         else return false;
     }
-
 
     public Task sendMailResetPassword(String emailAddress) {
         return mAuth.sendPasswordResetEmail(emailAddress)
@@ -307,7 +309,7 @@ public class DataManager {
                     }
                 }
 
-                Warning warning = new Warning(fWarning.getTitle(), fWarning.getContent(), fWarning.getCreator(), fWarning.getReceiver());
+                Warning warning = new Warning(fWarning.getTitle(), fWarning.getContent(), fWarning.getCreator(), fWarning.getReceiver(), fWarning.getCode_city(), fWarning.getCode_district(), fWarning.getCode_ward());
                 mDatabaseRef.child("Warnings").child(String.valueOf(count)).setValue(warning);
                 //PushNotify(fWarning.getContent());
                 Log.e("Data manager", "Add new warning successful");
@@ -336,9 +338,6 @@ public class DataManager {
                         Log.d(TAG, w.getContent());
                         return;
                     }
-                    /*Warning w = dataSnapshot.getValue(Warning.class);
-                    warningMutableLiveData.setValue(w);*/
-
                 }
             }
 
@@ -348,7 +347,6 @@ public class DataManager {
             }
         });
     }
-
 
     public void PushNotify(String content)
     {
@@ -377,6 +375,10 @@ public class DataManager {
                             identity.setText(account.getIdentity());
                             birthday.setText(account.getBirthday());
                             phonenumber.setText(account.getPhonenumber());
+
+                            /*city = account.getCode_city();
+                            district = account.getCode_district();
+                            ward = account.getCode_ward();*/
                         }
                     }
                     else Log.e("DataManager","Account not found");
@@ -420,7 +422,8 @@ public class DataManager {
         }
     }
 
-    public void UpdateUser(final String name, final String identity, final String birthday, final String phoneNumber)
+    public void UpdateUser(final String name, final String identity, final String birthday, final String phoneNumber,
+                           final int code_city, int code_district, final int code_ward)
     {
         try {
             Query query = mDatabase.getReference("Account").orderByChild("mail").equalTo(DataCenter.currentUser.getEmail());
@@ -437,6 +440,10 @@ public class DataManager {
                             account.setIdentity(identity);
                             account.setBirthday(birthday);
                             account.setPhonenumber(phoneNumber);
+                            account.setCode_city(code_city);
+                            account.setCode_district(code_district);
+                            account.setCode_ward(code_ward);
+                            DataCenter.currentUser = account;
                             mDatabase.getReference("Account").child(snapshot.getKey()).setValue(account);
                             Log.e("DataManager", "Update user successfully");
                         }
@@ -521,8 +528,6 @@ public class DataManager {
                             Question question = snapshot.getValue(Question.class);
                             lsQuestion.add(question);
                             Log.e("DataManager","Title of question was found is " + question.getTitle());
-                            //Log.e("DataManager","Type of question was found is " + question.getType());
-                            //Log.e("DataManager","Answer of question was found is " + question.getAnswers());
                         }
                         mListQuestion.setValue(lsQuestion);
                     }
@@ -676,17 +681,7 @@ public class DataManager {
             String key=mDatabaseRef.child("Post").push().getKey();
             post.setId(key);
             Task task = mDatabaseRef.child("Post").child(key).setValue(post);
-            task.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("DataManager",e.toString());
-                }
-            }).addOnSuccessListener(new OnSuccessListener() {
-                @Override
-                public void onSuccess(Object o) {
-                    Log.d("DataManager","Create new post success");
-                }
-            });
+            task.addOnFailureListener(e -> Log.d("DataManager",e.toString())).addOnSuccessListener(o -> Log.d("DataManager","Create new post success"));
         }
         catch (Exception e){
             Log.d("DataManager",e.toString());
@@ -1604,5 +1599,201 @@ public class DataManager {
 
             }
         });
+    }
+
+    public void GetAllmCity(final MutableLiveData<List<City>> mListCity)
+    {
+        try {
+            Query query = mDatabase.getReference("City");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        List<City> lsCity = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            City city = snapshot.getValue(City.class);
+                            lsCity.add(city);
+                            Log.e("DataManager","City was found is " + city.getName());
+                        }
+                        mListCity.setValue(lsCity);
+                    }
+                    else Log.e("DataManager","City not found");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e("DataManager","Error get city: " + e.getMessage());
+        }
+    }
+
+    public void GetmDistrictOfCity(final MutableLiveData<List<District>> mLsDistrict, String code)
+    {
+        try {
+            //Query query = mDatabase.getReference("City").child(id).child("district");
+            Query query = mDatabase.getReference("City").child(code).child("district");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        List<District> lsDistrict = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            District district = snapshot.getValue(District.class);
+                            lsDistrict.add(district);
+                            Log.e("DataManager","District was found is " + district.getName());
+                        }
+                        mLsDistrict.setValue(lsDistrict);
+                    }
+                    else Log.e("DataManager","District not found");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e("DataManager","Error get district: " + e.getMessage());
+        }
+    }
+
+    public void GetmWardOfDistrict(final MutableLiveData<List<Ward>> mLsWard, String cityCode, String districtCode)
+    {
+        try {
+            Query query = mDatabase.getReference("City").child(cityCode).child("district").child(districtCode).child("wards");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        List<Ward> lsWard = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Ward ward = snapshot.getValue(Ward.class);
+                            lsWard.add(ward);
+                            Log.e("DataManager","Ward was found is " + ward.getName());
+                        }
+                        mLsWard.setValue(lsWard);
+                    }
+                    else Log.e("DataManager","Ward not found");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e("DataManager","Error get district: " + e.getMessage());
+        }
+    }
+
+    public void GetAllmCityWarning(final MutableLiveData<List<City>> mListCity)
+    {
+        try {
+            Query query = mDatabase.getReference("City");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        List<City> lsCity = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            City city = snapshot.getValue(City.class);
+                            lsCity.add(city);
+                            Log.e("DataManager","City was found is " + city.getName());
+                        }
+                        mListCity.setValue(lsCity);
+                    }
+                    else Log.e("DataManager","City not found");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e("DataManager","Error get city: " + e.getMessage());
+        }
+    }
+
+    public void GetmDistrictOfCityWarning(final MutableLiveData<List<District>> mLsDistrict, String code)
+    {
+        try {
+            //Query query = mDatabase.getReference("City").child(id).child("district");
+            Query query = mDatabase.getReference("City").child(code).child("district");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        List<District> lsDistrict = new ArrayList<>();
+                        lsDistrict.add(new District("Tất cả","0"));
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            District district = snapshot.getValue(District.class);
+                            lsDistrict.add(district);
+                            Log.e("DataManager","District was found is " + district.getName());
+                        }
+                        mLsDistrict.setValue(lsDistrict);
+                    }
+                    else
+                    {
+                        Log.e("DataManager","District not found");
+                        List<District> lsDistrict = new ArrayList<>();
+                        lsDistrict.add(new District("--","0"));
+                        mLsDistrict.setValue(lsDistrict);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e("DataManager","Error get district: " + e.getMessage());
+        }
+    }
+
+    public void GetmWardOfDistrictWarning(final MutableLiveData<List<Ward>> mLsWard, String cityCode, String districtCode)
+    {
+        try {
+            Query query = mDatabase.getReference("City").child(cityCode).child("district").child(districtCode).child("wards");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        List<Ward> lsWard = new ArrayList<>();
+                        lsWard.add(new Ward("Tất cả","0"));
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Ward ward = snapshot.getValue(Ward.class);
+                            lsWard.add(ward);
+                            Log.e("DataManager","Ward was found is " + ward.getName());
+                        }
+                        mLsWard.setValue(lsWard);
+                    }
+                    else
+                    {
+                        Log.e("DataManager","Ward not found");
+                        List<Ward> lsWard = new ArrayList<>();
+                        lsWard.add(new Ward("--","0"));
+                        mLsWard.setValue(lsWard);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e("DataManager","Error get district: " + e.getMessage());
+        }
     }
 }

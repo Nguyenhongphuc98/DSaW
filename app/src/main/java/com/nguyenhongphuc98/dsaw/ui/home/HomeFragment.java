@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupView(View view) {
-        anyChartView = (AnyChartView) view.findViewById(R.id.home_line_chart);
+        anyChartView = view.findViewById(R.id.home_line_chart);
         changeAreaBtn = view.findViewById(R.id.home_btn_change_area);
         mapVisualizeBtn = view.findViewById(R.id.home_btn_visualine);
         areaTv = view.findViewById(R.id.home_tv_area);
@@ -72,29 +72,16 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupAction() {
-        changeAreaBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                homeViewModel.changeArea();
-            }
-        });
+        changeAreaBtn.setOnClickListener(v -> homeViewModel.changeArea());
 
-        mapVisualizeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(),"go to visualize",Toast.LENGTH_SHORT).show();
-                NavHostFragment.findNavController(getParentFragment()).navigate(R.id.go_to_mapVisualize);
-            }
+        mapVisualizeBtn.setOnClickListener(v -> {
+            Toast.makeText(getContext(),"go to visualize",Toast.LENGTH_SHORT).show();
+            NavHostFragment.findNavController(getParentFragment()).navigate(R.id.go_to_mapVisualize);
         });
     }
 
     private void setupObserver() {
-        homeViewModel.getArea().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                areaTv.setText(s);
-            }
-        });
+        homeViewModel.getArea().observe(this, s -> areaTv.setText(s));
     }
 
     public void setupChart() {
@@ -173,24 +160,21 @@ public class HomeFragment extends Fragment {
                 .offsetY(5d);
 
 
-         homeViewModel.getData().observe(this, new Observer<List<PublicData>>() {
-            @Override
-            public void onChanged(List<PublicData> publicData) {
-                List<DataEntry> seriesData = new ArrayList<>();
+         homeViewModel.getData().observe(this, publicData -> {
+             List<DataEntry> seriesData1 = new ArrayList<>();
 
-                for (PublicData p : publicData) {
-                    seriesData.add(new CustomDataEntry(p.getUpdate_date().split("-")[2],
-                            Integer.parseInt(p.getNum_confirmed()),
-                            Integer.parseInt(p.getNum_death()),
-                            Integer.parseInt(p.getNum_recovered())));
-                }
+             for (PublicData p : publicData) {
+                 seriesData1.add(new CustomDataEntry(p.getUpdate_date().split("-")[2],
+                         Integer.parseInt(p.getNum_confirmed()),
+                         Integer.parseInt(p.getNum_death()),
+                         Integer.parseInt(p.getNum_recovered())));
+             }
 
-                set.data(seriesData);
+             set.data(seriesData1);
 
 
-                updateTimeTv.setText(publicData.get(publicData.size()-1).getUpdate_time());
-            }
-        });
+             updateTimeTv.setText(publicData.get(publicData.size()-1).getUpdate_time());
+         });
         anyChartView.setChart(cartesian);
     }
 

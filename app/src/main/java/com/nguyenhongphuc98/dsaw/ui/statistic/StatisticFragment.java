@@ -55,8 +55,6 @@ public class StatisticFragment extends Fragment {
     // list name area to dropdown
     ArrayList<String> areasname = new ArrayList<>();
 
-    String xemtatca = "Xem tất cả";
-
     public static StatisticFragment newInstance() {
         return new StatisticFragment();
     }
@@ -135,7 +133,7 @@ public class StatisticFragment extends Fragment {
             @Override
             public void onChanged(List<Area> areas) {
                 areasname.clear();
-                areasname.add(xemtatca);
+                areasname.add("Xem tất cả");
                 for (Area a: areas) {
                     areasname.add(a.getName());
                 }
@@ -147,7 +145,6 @@ public class StatisticFragment extends Fragment {
     }
 
     void setupView(View view) {
-
         spinner = view.findViewById(R.id.statistic_spinner_area);
 
         pieChartView = view.findViewById(R.id.statistic_pie_chart);
@@ -193,10 +190,11 @@ public class StatisticFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String areaName = parent.getItemAtPosition(position).toString();
-                if(areaName.equals(xemtatca))
+                if(areaName.equals("Xem tất cả"))
                 {
                     mViewModel.fetchPieDataAllArea();
-                } else {
+                }
+                else {
                     for (Area a : mViewModel.getListAreas().getValue()) {
                         if (a.getName().equals(areaName)) {
                             mViewModel.fetchPieDataFor(a.getId());

@@ -73,24 +73,9 @@ public class LoginActivity extends AppCompatActivity {
 
     void InitEvent()
     {
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoginProcess();
-            }
-        });
-        sign_up.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CreateNewAccount();
-            }
-        });
-        get_password.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ResetPassword();
-            }
-        });
+        login.setOnClickListener(v -> LoginProcess());
+        sign_up.setOnClickListener(v -> CreateNewAccount());
+        get_password.setOnClickListener(v -> ResetPassword());
     }
 
     public void LoginProcess()
@@ -132,8 +117,6 @@ public class LoginActivity extends AppCompatActivity {
         //else DataManager.Instance().GetUserDataByEmail(account.getText().toString());
         //Log.e("LoginProcess","Account: " + DataCenter.currentUser.getUsername());
 
-
-
         Toast.makeText(getApplicationContext(), "Loading...", Toast.LENGTH_LONG).show();
     }
 
@@ -166,33 +149,28 @@ public class LoginActivity extends AppCompatActivity {
         //set current account after login to using later
         MutableLiveData<Account> user = new MutableLiveData<>();
         DataManager.Instance().fetchAccountByEmail(DataCenter.currentUser.getEmail(),user);
-        user.observe(this, new Observer<Account>() {
-            @Override
-            public void onChanged(Account account) {
+        user.observe(this, account -> {
+            // update to get full info of current account
+            DataCenter.currentUser = account;
+            locationTrack = new LocationTrack(this);
 
-                // update to get full info of current account
-                DataCenter.currentUser = account;
-                locationTrack = new LocationTrack(getApplicationContext());
+            if (locationTrack.canGetLocation()) {
 
-                if (locationTrack.canGetLocation()) {
+                double longitude = locationTrack.getLongitude();
+                double latitude = locationTrack.getLatitude();
 
-                    double longitude = locationTrack.getLongitude();
-                    double latitude = locationTrack.getLatitude();
+                DataCenter.currentLocation = new CurrentLocation(latitude, longitude);
 
-                    DataCenter.currentLocation = new CurrentLocation(latitude, longitude);
-
-                    //Toast.makeText(getApplicationContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_LONG).show();
-                    //Log.e("LOCATION", "onCreate: location:"+longitude +"-"+latitude);
-                } else {
-
-                    locationTrack.showSettingsAlert();
-                }
-
-                // Open main screen when have enough data
-                hiddenProgessbar();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
+                //Toast.makeText(getApplicationContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_LONG).show();
+                //Log.e("LOCATION", "onCreate: location:"+longitude +"-"+latitude);
+            } else {
+                locationTrack.showSettingsAlert();
             }
+
+            // Open main screen when have enough data
+            hiddenProgessbar();
         });
     }
 

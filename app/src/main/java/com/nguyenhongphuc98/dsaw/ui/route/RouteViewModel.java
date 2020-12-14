@@ -21,13 +21,6 @@ public class RouteViewModel extends ViewModel {
     }
 
     public void fetchData(String uid) {
-
-//        lsTracking = new ArrayList<>();
-//        lsTracking.add(new TrackingStatus("Khách sạn Mường Thanh, 34/22 Lý Liên Kiệt. Hà Nội","11/02"));
-//        lsTracking.add(new TrackingStatus("Trường ĐH CNTT 06, Linh Trung, Thủ Đức. Hồ Chí Minh","05/01"));
-//        lsTracking.add(new TrackingStatus("Nhà riêng, 34/22 Lý Liên Kiệt. Hà Nội","02/01"));
-//        mTracking.setValue(lsTracking);
-
         DataManager.Instance().fetchRouteOf(routeData,uid);
     }
 

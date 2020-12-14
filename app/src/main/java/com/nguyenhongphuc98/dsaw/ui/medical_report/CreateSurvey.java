@@ -137,24 +137,21 @@ public class CreateSurvey extends Fragment {
             }
         });
 
-        saveSurvey.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (nameOfSurvey.getText().toString().isEmpty()) {
+        saveSurvey.setOnClickListener(v -> {
+            if (nameOfSurvey.getText().toString().isEmpty()) {
 
-                    Toast.makeText(getContext(), "Không dược bỏ trống tên khảo sát", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    lvQuestion.removeAllViewsInLayout();
-                    int spinner_pos = typeOfSurvey.getSelectedItemPosition();
+                Toast.makeText(getContext(), "Không dược bỏ trống tên khảo sát", Toast.LENGTH_LONG).show();
+            }
+            else {
+                lvQuestion.removeAllViewsInLayout();
+                int spinner_pos = typeOfSurvey.getSelectedItemPosition();
 
-                    if (spinner_pos == 0) DataManager.Instance().AddNewSurvey("personal_medical", lsQuestion, nameOfSurvey.getText().toString());
-                    else if (spinner_pos == 1) DataManager.Instance().AddNewSurvey("relatives_medical", lsQuestion, nameOfSurvey.getText().toString());
-                    else DataManager.Instance().AddNewSurvey("report", lsQuestion, nameOfSurvey.getText().toString());
+                if (spinner_pos == 0) DataManager.Instance().AddNewSurvey("personal_medical", lsQuestion, nameOfSurvey.getText().toString());
+                else if (spinner_pos == 1) DataManager.Instance().AddNewSurvey("relatives_medical", lsQuestion, nameOfSurvey.getText().toString());
+                else DataManager.Instance().AddNewSurvey("report", lsQuestion, nameOfSurvey.getText().toString());
 
-                    nameOfSurvey.setText("");
-                    Toast.makeText(getContext(), "Tạo khảo sát thành công", Toast.LENGTH_LONG).show();
-                }
+                nameOfSurvey.setText("");
+                Toast.makeText(getContext(), "Tạo khảo sát thành công", Toast.LENGTH_LONG).show();
             }
         });
     }
